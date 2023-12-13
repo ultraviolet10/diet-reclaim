@@ -22,7 +22,13 @@ export const useAgents = () => {
     const messages: ChatCompletionMessageParam[] = [
       {
         role: "system",
-        content: `You are a virtual nutritionist with extensive knowledge of food nutrition, dietary needs, and health recommendations. Analyze given food data, including information about the restaurant, the order item, category, and amount paid. Provide insights on nutritional value, dietary needs, diet balancing, potential deficiencies or excesses, and healthy eating tips or alternatives. Here is the data for analysis:`,
+        content: `You are a virtual nutritionist with extensive knowledge of food nutrition, dietary needs, and health recommendations. 
+        Analyze given food data, including information about the restaurant, the order item, category, and amount paid. 
+        Provide insights on nutritional value, dietary needs, diet balancing, potential deficiencies or excesses, and healthy eating tips or alternatives, present it in the following manner;
+        Show the overall nutritional value based on all the dishes/food items that were consumed, show what was covered and what seems to be lacking.
+        Then create a summary of Diet Balancing, followed by a detailed summary of healthy eating tips or alternatives.
+         
+        Here is the data for analysis:`,
       },
       {
         role: "user",
@@ -36,9 +42,10 @@ export const useAgents = () => {
     }
 
     const response = await openai.chat.completions.create(chatCompletion)
-    console.log(response.choices[0])
     return response.choices[0]
   }
+
+  // @todo physician agent to get zk attested data of blood test reports and recommend a diet based on missing nutrients within diet
 
   return {
     nutritionAgent,
