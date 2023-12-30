@@ -1,19 +1,21 @@
-import Image from "next/image"
 import { Inter } from "next/font/google"
 import { GenerateProof } from "@reclaimprotocol/reclaim-connect-react"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { useAgents } from "@/hooks/useAgents"
-import { mockMealData } from "@/utils/data"
+import { convertToDesiredFormat, mockMealData } from "@/utils/data"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export default function Home() {
+  const [proofs, setProofs] = useState<any>()
   const { nutritionAgent } = useAgents()
 
   const handleVerify = useCallback(async () => {
-    const getNutritionData = await nutritionAgent(mockMealData)
+    const getNutritionData = await nutritionAgent(
+      convertToDesiredFormat(proofs)
+    )
     console.log(getNutritionData)
-  }, [nutritionAgent])
+  }, [nutritionAgent, proofs])
 
   return (
     <main
@@ -34,10 +36,10 @@ export default function Home() {
             </span>
 
             <GenerateProof
-              appID="6d6c04eb-237b-4599-8797-94d48b0ac612"
-              userID="dasq2easdase-asdq2e3" //optional
-              onProofSubmission={(proofs, sessionId) => {
-                console.log({ proofs, sessionId })
+              appID={process.env.NEXT_PUBLIC_RECLAIM_APP_ID as string}
+              userID="" // optional
+              onProofSubmission={(proofs) => {
+                setProofs(proofs[0].extractedParameterValues)
               }}
               onProofSubmissionFailed={() => {
                 console.log("error")
